@@ -10,45 +10,9 @@ function setup() {
     background(51);
     for (let i=0;i<grid.length;i++){
         for(let j=0;j<grid.length;j++){
-            grid[i][j]=new Cell(0,i*10,j*10);
-        }//Math.round(Math.random(0,1))
+            grid[i][j]=new Cell(Math.round(Math.random(0,1)),i*10,j*10);
+        }
     }
-    /*grid[24][0].change();
-    grid[22][1].change();
-    grid[24][1].change();
-    grid[12][2].change();
-    grid[13][2].change();
-    grid[20][2].change();
-    grid[21][2].change();
-    grid[34][2].change();
-    grid[35][2].change();
-    grid[11][3].change();
-    grid[15][3].change();
-    grid[20][3].change();
-    grid[21][3].change();
-    grid[34][3].change();
-    grid[35][3].change();
-    grid[0][4].change();
-    grid[1][4].change();
-    grid[10][4].change();
-    grid[16][4].change();
-    grid[20][4].change();
-    grid[21][4].change();
-    grid[0][5].change();
-    grid[1][5].change();
-    grid[10][5].change();
-    grid[14][5].change();
-    grid[16][5].change();
-    grid[17][5].change();
-    grid[22][5].change();
-    grid[24][5].change();
-    grid[10][6].change();
-    grid[16][6].change();
-    grid[24][6].change();
-    grid[11][7].change();
-    grid[15][7].change();
-    grid[12][8].change();
-    grid[13][8].change();*/
 }   
 function draw() {
     let updates=[];
@@ -112,14 +76,14 @@ function test(grid,i,j,updates){
         }
     }
 }
-function mouseClicked(){
+/*function mouseClicked(){
     let x=mouseX;
     let y=mouseY;
     let i=int(x/10)
     let j=int(y/10)
     grid[int(x/10)][int(y/10)].change();
     grid[int(x/10)][int(y/10)].show();
-}
+}*/
     
     
     
