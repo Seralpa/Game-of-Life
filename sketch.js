@@ -1,23 +1,42 @@
-let size = 80;
-let grid = new Array(size);
-for (let i=0;i<size;i++){
-    grid[i]= new Array(size);
+let width=800;
+let height=600;
+let cellSize=20;
+let wSize = width/cellSize;
+let hSize = height/cellSize;
+
+let grid = new Array(hSize);
+for (let i=0;i<hSize;i++){
+    grid[i]= new Array(wSize);
 }
 let cont=0;
 function setup() {
-    //frameRate(2);
-    createCanvas(800,800);
+    noLoop();
+    createCanvas(width,height);
     background(51);
+
+    bStart = createButton('Start');
+    bStart.position(width, 0);
+    bStart.mousePressed(start);
+
+    bStop = createButton('Stop');
+    bStop.position(bStart.x+bStart.width, 0);
+    bStop.mousePressed(stop);
+
+    bClean = createButton('Clean');
+    bClean.position(bStop.x+bStop.width, 0);
+    bClean.mousePressed(clean);
+
     for (let i=0;i<grid.length;i++){
-        for(let j=0;j<grid.length;j++){
-            grid[i][j]=new Cell(Math.round(Math.random(0,1)),i*10,j*10);
+        for(let j=0;j<grid[i].length;j++){
+            grid[i][j]=new Cell(0,j*cellSize,i*cellSize);
+            grid[i][j].show();
         }
     }
 }   
 function draw() {
     let updates=[];
     for (let i=0;i<grid.length;i++){
-        for(let j=0;j<grid.length;j++){
+        for(let j=0;j<grid[i].length;j++){
             grid[i][j].show();
             test(grid,i,j,updates);
         }
@@ -27,10 +46,8 @@ function draw() {
     }
     updates=[];
     cont++;
-    if(cont>50000){
-        noLoop();
-    }
 }
+
 function Cell(is_alive,x,y){
     this.is_alive=is_alive;
     this.x=x;
@@ -42,12 +59,13 @@ function Cell(is_alive,x,y){
         }else{
             fill(0, 0,51);
         }
-        rect(this.x,this.y,10,10);
-    };
+        rect(this.x,this.y,cellSize,cellSize);
+    }
     this.change=function(){
         this.is_alive=!this.is_alive;
     }
 }
+
 function test(grid,i,j,updates){
     let surrounding=0;
     let i_init=i-1;
@@ -56,8 +74,8 @@ function test(grid,i,j,updates){
     let j_end=j+1;
     if(i==0)i_init++;
     if(j==0)j_init++;
-    if(i==grid.length-1)i_end--;
-    if(j==grid.length-1)j_end--;
+    if(i_end>=grid.length)i_end--;
+    if(j_end>=grid.length)j_end--;
     for(let x=i_init;x<=i_end;x++){
         for(let y=j_init;y<=j_end;y++){
             if(x!=i || y!=j){
@@ -76,20 +94,29 @@ function test(grid,i,j,updates){
         }
     }
 }
-/*function mouseClicked(){
+function mouseClicked(){
     let x=mouseX;
     let y=mouseY;
-    let i=int(x/10)
-    let j=int(y/10)
-    grid[int(x/10)][int(y/10)].change();
-    grid[int(x/10)][int(y/10)].show();
-}*/
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    if(x>=0 && x<=width && y>=0 && y<=height){
+        grid[int(y/cellSize)][int(x/cellSize)].change();
+        grid[int(y/cellSize)][int(x/cellSize)].show();
+    }
+}
+
+function start(){
+    loop();
+}
+
+function stop(){
+    noLoop();
+}
+
+function clean(){
+    for(let i=0;i<grid.length;i++){
+        for (let j = 0; j < grid[i].length; j++) {
+            grid[i][j].is_alive=false;
+            grid[i][j].show();
+        }
+    }
+    noLoop();
+}
