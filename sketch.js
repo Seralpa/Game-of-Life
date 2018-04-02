@@ -1,51 +1,63 @@
-let width=800;
-let height=600;
-let cellSize=20;
-let wSize = width/cellSize;
-let hSize = height/cellSize;
+const width=800;    //Width of canvas
+const height=600;   //Height of canvas
+const cellSize=20;  //Size of side of each cell
+const space=5;      //Spacing between buttons
 
+const wSize = width/cellSize;
+const hSize = height/cellSize;
+
+let active=false;
 let grid = new Array(hSize);
 for (let i=0;i<hSize;i++){
     grid[i]= new Array(wSize);
 }
-let cont=0;
+
 function setup() {
-    noLoop();
+    // frameRate(1);
     createCanvas(width,height);
     background(51);
 
-    bStart = createButton('Start');
-    bStart.position(width, 0);
-    bStart.mousePressed(start);
-
-    bStop = createButton('Stop');
-    bStop.position(bStart.x+bStart.width, 0);
-    bStop.mousePressed(stop);
+    bStart_stop = createButton('Start/Stop');
+    bStart_stop.position(width, 0);
+    bStart_stop.mousePressed(start_stop);
 
     bClean = createButton('Clean');
-    bClean.position(bStop.x+bStop.width, 0);
+    bClean.position(width, bStart_stop.y+bStart_stop.height+space);
     bClean.mousePressed(clean);
+
+    bRand = createButton('Random');
+    bRand.position(width, bClean.y+bClean.height+space);
+    bRand.mousePressed(rand);
 
     for (let i=0;i<grid.length;i++){
         for(let j=0;j<grid[i].length;j++){
             grid[i][j]=new Cell(0,j*cellSize,i*cellSize);
-            grid[i][j].show();
         }
     }
-}   
+    noLoop();
+}
+
 function draw() {
-    let updates=[];
-    for (let i=0;i<grid.length;i++){
-        for(let j=0;j<grid[i].length;j++){
-            grid[i][j].show();
-            test(grid,i,j,updates);
+    if(!active){
+        for (let i=0;i<grid.length;i++){
+            for(let j=0;j<grid[i].length;j++){
+                grid[i][j].show();
+            }
         }
     }
-    for(let i=0;i<updates.length;i++){
-        grid[updates[i][0]][updates[i][1]].change();
+    else{
+        let updates=[];
+        for (let i=0;i<grid.length;i++){
+            for(let j=0;j<grid[i].length;j++){
+                grid[i][j].show();
+                test(grid,i,j,updates);
+            }
+        }
+        for(let i=0;i<updates.length;i++){
+            grid[updates[i][0]][updates[i][1]].change();
+        }
+        updates=[];
     }
-    updates=[];
-    cont++;
 }
 
 function Cell(is_alive,x,y){
@@ -53,6 +65,7 @@ function Cell(is_alive,x,y){
     this.x=x;
     this.y=y;
     this.show=function(){
+        push();
         stroke(255);
         if(this.is_alive){
             fill(255);
@@ -60,6 +73,7 @@ function Cell(is_alive,x,y){
             fill(0, 0,51);
         }
         rect(this.x,this.y,cellSize,cellSize);
+        pop();
     }
     this.change=function(){
         this.is_alive=!this.is_alive;
@@ -75,7 +89,7 @@ function test(grid,i,j,updates){
     if(i==0)i_init++;
     if(j==0)j_init++;
     if(i_end>=grid.length)i_end--;
-    if(j_end>=grid.length)j_end--;
+    if(j_end>=grid[i].length)j_end--;
     for(let x=i_init;x<=i_end;x++){
         for(let y=j_init;y<=j_end;y++){
             if(x!=i || y!=j){
@@ -99,16 +113,14 @@ function mouseClicked(){
     let y=mouseY;
     if(x>=0 && x<=width && y>=0 && y<=height){
         grid[int(y/cellSize)][int(x/cellSize)].change();
-        grid[int(y/cellSize)][int(x/cellSize)].show();
+        redraw();
     }
 }
 
-function start(){
-    loop();
-}
-
-function stop(){
-    noLoop();
+function start_stop(){
+    if(active) noLoop();
+    else loop();
+    active=!active;
 }
 
 function clean(){
@@ -119,4 +131,14 @@ function clean(){
         }
     }
     noLoop();
+    active=false;
+}
+
+function rand(){
+    for (let i = 0; i < grid.length; i++) {
+        for (let j = 0; j < grid[i].length; j++) {
+            grid[i][j].is_alive=Math.round(Math.random(0,1));                  
+        }
+    }
+    redraw();
 }
