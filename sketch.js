@@ -67,11 +67,14 @@ function draw() {
     }
 }
 
-function Cell(is_alive,x,y){
-    this.is_alive=is_alive;
-    this.x=x;
-    this.y=y;
-    this.show=function(){
+class Cell{
+    constructor(is_alive,x,y){
+        this.is_alive=is_alive;
+        this.x=x;
+        this.y=y;
+    }
+    
+    show(){
         push();
         stroke(255);
         if(this.is_alive){
@@ -82,7 +85,8 @@ function Cell(is_alive,x,y){
         rect(this.x,this.y,cellSize,cellSize);
         pop();
     }
-    this.change=function(){
+
+    change(){
         this.is_alive=!this.is_alive;
     }
 }
@@ -115,6 +119,7 @@ function test(grid,i,j,updates){
         }
     }
 }
+
 function mouseClicked(){
     let x=mouseX;
     let y=mouseY;
