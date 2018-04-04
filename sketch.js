@@ -67,14 +67,12 @@ function draw() {
     }
 }
 
-class Cell{
-    constructor(is_alive,x,y){
-        this.is_alive=is_alive;
-        this.x=x;
-        this.y=y;
-    }
+function Cell(is_alive,x,y){
+    this.is_alive=is_alive;
+    this.x=x;
+    this.y=y;
     
-    show(){
+    this.show=function(){
         push();
         stroke(255);
         if(this.is_alive){
@@ -86,7 +84,7 @@ class Cell{
         pop();
     }
 
-    change(){
+    this.change=function(){
         this.is_alive=!this.is_alive;
     }
 }
