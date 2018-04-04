@@ -3,9 +3,10 @@ const height=600;   //Height of canvas
 const cellSize=20;  //Size of side of each cell
 const space=5;      //Spacing between buttons
 
-const wSize = width/cellSize;
-const hSize = height/cellSize;
+const wSize = Math.floor(width/cellSize);
+const hSize = Math.floor(height/cellSize);
 
+let bStart_stop,bClean,bRand,frameSlider;
 let active=false;
 let grid = new Array(hSize);
 for (let i=0;i<hSize;i++){
@@ -13,10 +14,8 @@ for (let i=0;i<hSize;i++){
 }
 
 function setup() {
-    // frameRate(1);
     createCanvas(width,height);
-    background(51);
-
+    
     bStart_stop = createButton('Start/Stop');
     bStart_stop.position(width, 0);
     bStart_stop.mousePressed(start_stop);
@@ -29,6 +28,12 @@ function setup() {
     bRand.position(width, bClean.y+bClean.height+space);
     bRand.mousePressed(rand);
 
+    frameSlider = createSlider(1, 60, 60);
+    frameSlider.position(width, bRand.y+bRand.height+space);
+
+    t1 = createElement('p', 'Speed');
+    t1.position(frameSlider.x+frameSlider.width+space, frameSlider.y-13);
+
     for (let i=0;i<grid.length;i++){
         for(let j=0;j<grid[i].length;j++){
             grid[i][j]=new Cell(0,j*cellSize,i*cellSize);
@@ -38,6 +43,8 @@ function setup() {
 }
 
 function draw() {
+    let fr=frameSlider.value();
+    frameRate(fr);
     if(!active){
         for (let i=0;i<grid.length;i++){
             for(let j=0;j<grid[i].length;j++){
@@ -70,7 +77,7 @@ function Cell(is_alive,x,y){
         if(this.is_alive){
             fill(255);
         }else{
-            fill(0, 0,51);
+            fill(0,0,51);
         }
         rect(this.x,this.y,cellSize,cellSize);
         pop();
@@ -111,7 +118,7 @@ function test(grid,i,j,updates){
 function mouseClicked(){
     let x=mouseX;
     let y=mouseY;
-    if(x>=0 && x<=width && y>=0 && y<=height){
+    if(x>=0 && x<wSize*cellSize && y>=0 && y<hSize*cellSize){
         grid[int(y/cellSize)][int(x/cellSize)].change();
         redraw();
     }
